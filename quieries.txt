@@ -1,0 +1,93 @@
+Kate Bohning
+Databases Winter 2026
+Final Project - Queries
+
+Query #1
+
+--Compare average deep sleep and REM sleep duration for user (Kate)
+
+SELECT
+    m.is_present AS 'Migraine Present',
+    ROUND(AVG(s.deep_time), 2) AS 'Avg Deep Sleep (min)',
+    ROUND(AVG(s.rem_time), 2) AS 'Avg REM Sleep (min)',
+    COUNT(*) AS 'Total Days'
+FROM user u
+JOIN daily_summary d ON u.user_ID = d.user_ID
+JOIN sleep_analysis s ON d.sum_ID = s.sum_ID
+JOIN migraine_log m ON d.sum_ID = m.sum_ID
+WHERE u.user_ID = 1
+GROUP BY m.is_present;
+
+Query #2
+
+-- List the top 5 most active days across all users by step count,
+showing the user name, date, steps, and their max heart rate recorded
+on that day
+
+SELECT
+    u.name AS 'User',
+    d.log_date AS 'Date',
+    a.steps AS 'Steps',
+    h.max_hr AS 'Max HR'
+FROM user u
+JOIN daily_summary d ON u.user_ID = d.user_ID
+JOIN o2_activity a ON d.sum_ID = a.sum_ID
+JOIN heart_metrics h ON d.sum_ID = h.sum_ID
+ORDER BY a.steps DESC
+LIMIT 5;
+
+Query #3
+
+-- Identify days where users had health markers: avg hr over 85 or sp02 under 91%
+ordered by the most recent date
+
+SELECT
+    u.name AS 'User',
+    d.log_date AS 'Date',
+    h.avr_hr AS 'Avg HR',
+    a.min_spo2 AS 'Min SpO2',
+    m.is_present AS 'Migraine'
+FROM user u
+JOIN daily_summary d ON u.user_ID = d.user_ID
+JOIN heart_metrics h ON d.sum_ID = h.sum_ID
+JOIN o2_activity a ON d.sum_ID = a.sum_ID
+JOIN migraine_log m ON d.sum_ID = m.sum_ID
+WHERE h.avr_hr > 85 OR a.min_spo2 < 91
+ORDER BY d.log_date DESC
+LIMIT 5;
+
+Query #4
+
+-- Calculate the total number of migraines logged,
+the average daily steps and the total calories for all users
+
+SELECT
+    u.name AS 'User',
+    SUM(m.is_present) AS 'Total Migraines',
+    ROUND(AVG(a.steps), 0) AS 'Avg Daily Steps',
+    ROUND(SUM(a.calories), 0) AS 'Total Calories'
+FROM user u
+JOIN daily_summary d ON u.user_ID = d.user_ID
+JOIN migraine_log m ON d.sum_ID = m.sum_ID
+JOIN o2_activity a ON d.sum_ID = a.sum_ID
+GROUP BY u.user_ID
+ORDER BY SUM(m.is_present) DESC;
+
+Query #5
+
+-- show detailed sleep stage metrics for the 5 most recent migraine occurrences
+logged to show potential patterns
+
+SELECT
+    u.name AS 'User',
+    d.log_date AS 'Date',
+    s.total_time AS 'Total Time Asleep',
+    s.deep_time AS 'Deep Sleep',
+    s.rem_time AS 'REM Sleep'
+FROM user u
+JOIN daily_summary d ON u.user_ID = d.user_ID
+JOIN migraine_log m ON d.sum_ID = m.sum_ID
+JOIN sleep_analysis s ON d.sum_ID = s.sum_ID
+WHERE m.is_present = 1
+ORDER BY d.log_date DESC
+LIMIT 5;
