@@ -13,6 +13,7 @@ The project is a SQLite database (`migrainehealthmetrics.db`) with a small PHP w
 
 - PHP 8 or later with the `pdo_sqlite` extension (Homebrew's PHP includes it)
 - macOS no longer comes with PHP, so install it first:
+- Windows users use pip
 
 ```bash
 brew install php
@@ -27,6 +28,8 @@ php -m | grep pdo_sqlite    # confirm SQLite support
    git clone https://github.com/kemacias/Migraine_Health_Metrics_Database.git
    cd Migraine_Health_Metrics_Database
    ```
+   - make sure you're in the Migraine_Health_Metrics-Database directory.
+     
 2. Start PHP's built-in web server from the project folder:
    ```bash
    php -S localhost:8000
