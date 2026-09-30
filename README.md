@@ -1,6 +1,6 @@
 # Migraine and Health Metrics Database
 
-**Author:** Kate Bohning  
+**Author:** Kate Macias  
 **Course:** Databases, Winter 2026
 
 A relational database design that links a user's daily health metrics (heart rate, blood oxygen and activity, sleep) to whether they had a migraine that day. The data can then be queried for patterns that come before a migraine.
